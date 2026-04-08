@@ -203,6 +203,42 @@
       margin: 0.45rem 0;
     }
 
+    /* Inline architecture flow */
+    .arch-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.35rem;
+      margin: 1.35rem 0 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .arch-node {
+      padding: 0.55rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 4px 16px rgba(79, 110, 247, 0.06);
+      color: var(--text);
+    }
+
+    .arch-node.mcp {
+      background: rgba(79, 110, 247, 0.1);
+      border-color: rgba(79, 110, 247, 0.22);
+    }
+
+    .arch-node.api {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.22);
+    }
+
+    .arch-arrow {
+      color: var(--text-soft);
+      font-weight: 600;
+      user-select: none;
+    }
+
     /* Arrow controls */
     .arrows {
       position: absolute;
@@ -381,6 +417,34 @@
             </p>
           </div>
         </article>
+
+        <article class="slide" data-slide="1" aria-label="Slide 2">
+          <div class="slide-card">
+            <span class="slide-label">Architecture</span>
+            <h1>Coordinator, one workspace agent, MCP outside</h1>
+            <p>
+              The ADK app root is the <strong>coordinator</strong>: it classifies intent, handles chit-chat, and delegates with <code style="font-size:0.9em">transfer_to_agent("workspace_agent")</code>. There are <strong>no separate Calendar/Gmail/Drive agents</strong>—one workspace specialist carries the full MCP toolset.
+            </p>
+            <div class="arch-flow" aria-hidden="true">
+              <span class="arch-node">User</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">Coordinator</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">Workspace agent</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node mcp">Workspace MCP</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node api">Google APIs</span>
+            </div>
+            <p>
+              The <strong>Workspace MCP server</strong> exposes tools (<code style="font-size:0.88em">calendar_*</code>, <code style="font-size:0.88em">gmail_*</code>, <code style="font-size:0.88em">drive_*</code>), runs OAuth and token storage, and talks to Google REST APIs. The assistant stays focused on reasoning and tool orchestration—not low-level auth plumbing.
+            </p>
+            <ul>
+              <li><strong>Transport:</strong> MCP Streamable HTTP between assistant and server.</li>
+              <li><strong>Deploy:</strong> assistant and MCP as separate services (e.g. two Cloud Run services) with <code style="font-size:0.88em">mcp_settings.json</code> pointing at the live MCP URL.</li>
+            </ul>
+          </div>
+        </article>
       </div>
     </div>
 
@@ -391,9 +455,12 @@
           <div class="thumb-index">01</div>
           <div class="thumb-title">Brief about the Idea</div>
         </button>
-        <!-- New slide: duplicate .thumb, increment index & label; add matching <article class="slide"> above -->
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-1" id="tab-1" data-index="1">
+          <div class="thumb-index">02</div>
+          <div class="thumb-title">Architecture</div>
+        </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 1</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 2</p>
     </div>
   </div>
 
