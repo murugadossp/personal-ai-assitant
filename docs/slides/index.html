@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slides — Personal AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-a: #e8f0ff;
+      --bg-b: #f5f0ff;
+      --bg-c: #fef6ff;
+      --glass: rgba(255, 255, 255, 0.42);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --glass-highlight: rgba(255, 255, 255, 0.85);
+      --text: #1a1f36;
+      --text-soft: #5c6578;
+      --accent: #4f6ef7;
+      --accent-soft: rgba(79, 110, 247, 0.12);
+      --shadow: 0 24px 80px rgba(31, 38, 135, 0.08), 0 8px 32px rgba(79, 110, 247, 0.06);
+      --shadow-card: 0 8px 32px rgba(31, 38, 135, 0.06);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --blur: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(147, 197, 253, 0.45), transparent 55%),
+        radial-gradient(900px 700px at 95% 20%, rgba(196, 181, 253, 0.4), transparent 50%),
+        radial-gradient(800px 600px at 50% 100%, rgba(251, 207, 232, 0.35), transparent 45%),
+        linear-gradient(165deg, var(--bg-a), var(--bg-b) 45%, var(--bg-c));
+      background-attachment: fixed;
+      line-height: 1.65;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: clamp(1.25rem, 4vw, 2.5rem);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .brand {
+      font-family: "Outfit", sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      color: var(--text-soft);
+    }
+
+    .brand strong {
+      color: var(--text);
+    }
+
+    .nav-hint {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--glass-border);
+    }
+
+    kbd {
+      font-family: inherit;
+      font-size: 0.72rem;
+      padding: 0.12rem 0.4rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Main slide stage */
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: min(62vh, 520px);
+      position: relative;
+    }
+
+    .slide-deck {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .slide {
+      display: none;
+      animation: fadeIn 0.45s ease;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-card {
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(1.75rem, 5vw, 2.75rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 42%, transparent 100%);
+      opacity: 0.5;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .slide-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .slide h1 {
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(1.65rem, 4.5vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+    }
+
+    .slide p {
+      color: var(--text-soft);
+      font-size: 1.02rem;
+      margin-bottom: 1rem;
+      max-width: 58ch;
+    }
+
+    .slide p:last-child {
+      margin-bottom: 0;
+    }
+
+    .slide ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.2rem;
+      color: var(--text-soft);
+    }
+
+    .slide li {
+      margin: 0.45rem 0;
+    }
+
+    /* Arrow controls */
+    .arrows {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 860px;
+      margin: 0 auto;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% + 4rem);
+      padding: 0;
+    }
+
+    .arrow-btn {
+      pointer-events: auto;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: transform 0.2s, background 0.2s, opacity 0.2s;
+    }
+
+    .arrow-btn:hover:not(:disabled) {
+      transform: scale(1.06);
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .arrow-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .arrow-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Bottom card rail */
+    .rail-wrap {
+      margin-top: auto;
+    }
+
+    .rail-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 0.65rem;
+      padding-left: 0.25rem;
+    }
+
+    .rail {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 0.35rem 0.15rem 0.85rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .rail::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .rail::-webkit-scrollbar-thumb {
+      background: rgba(79, 110, 247, 0.25);
+      border-radius: 99px;
+    }
+
+    .thumb {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      width: min(200px, 42vw);
+      padding: 1rem 1.15rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
+      box-shadow: var(--shadow-card);
+    }
+
+    .thumb:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .thumb.active {
+      border-color: rgba(79, 110, 247, 0.45);
+      background: var(--accent-soft);
+      box-shadow: 0 12px 40px rgba(79, 110, 247, 0.12);
+    }
+
+    .thumb-index {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+
+    .thumb-title {
+      font-family: "Outfit", sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .counter {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-top: 0.35rem;
+    }
+
+    @media (max-width: 640px) {
+      .arrows {
+        width: 100%;
+        padding: 0 0.25rem;
+      }
+
+      .arrow-btn {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <p class="brand"><strong>Personal AI Assistant</strong> · deck</p>
+      <p class="nav-hint"><kbd>←</kbd> <kbd>→</kbd> or tap cards below</p>
+    </header>
+
+    <div class="stage">
+      <div class="arrows" aria-hidden="true">
+        <button type="button" class="arrow-btn" id="prevBtn" aria-label="Previous slide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="arrow-btn" id="nextBtn" aria-label="Next slide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="slide-deck" id="deck">
+        <!-- Add new slides as <article class="slide">; keep .thumb in sync below -->
+        <article class="slide active" data-slide="0" aria-label="Slide 1">
+          <div class="slide-card">
+            <span class="slide-label">Brief about the Idea</span>
+            <h1>Natural language over your real Google Workspace</h1>
+            <p>
+              The project is a <strong>personal AI assistant</strong> that lets you talk to Calendar, Gmail, and Drive in plain English—without juggling separate apps or brittle custom scripts.
+            </p>
+            <p>
+              A <strong>coordinator</strong> agent handles routing and light conversation, then hands workspace tasks to a single <strong>workspace</strong> sub-agent. That agent calls a dedicated <strong>Google Workspace MCP server</strong> over Streamable HTTP, keeping OAuth, tokens, and API details out of the agent’s core logic.
+            </p>
+            <p>
+              Built for <strong>Google GenAI APAC Hackathon 2026</strong>: demonstrate ADK multi-agent patterns, MCP as a clean tool boundary, and production-minded touches (config-driven Gemini models, deployable MCP and assistant services).
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="rail-wrap">
+      <p class="rail-title">Slides</p>
+      <div class="rail" id="rail" role="tablist" aria-label="Slide thumbnails">
+        <button type="button" class="thumb active" role="tab" aria-selected="true" aria-controls="slide-0" id="tab-0" data-index="0">
+          <div class="thumb-index">01</div>
+          <div class="thumb-title">Brief about the Idea</div>
+        </button>
+        <!-- New slide: duplicate .thumb, increment index & label; add matching <article class="slide"> above -->
+      </div>
+      <p class="counter" id="counter" aria-live="polite">1 / 1</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const thumbs = Array.from(document.querySelectorAll(".thumb"));
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const counter = document.getElementById("counter");
+      let index = 0;
+
+      function goTo(i) {
+        index = Math.max(0, Math.min(i, slides.length - 1));
+        slides.forEach((s, j) => {
+          s.classList.toggle("active", j === index);
+        });
+        thumbs.forEach((t, j) => {
+          const on = j === index;
+          t.classList.toggle("active", on);
+          t.setAttribute("aria-selected", on);
+        });
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === slides.length - 1;
+        counter.textContent = `${index + 1} / ${slides.length}`;
+      }
+
+      prevBtn.addEventListener("click", () => goTo(index - 1));
+      nextBtn.addEventListener("click", () => goTo(index + 1));
+
+      thumbs.forEach((t) => {
+        t.addEventListener("click", () => goTo(Number(t.dataset.index)));
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") goTo(index - 1);
+        if (e.key === "ArrowRight") goTo(index + 1);
+      });
+
+      goTo(0);
+    })();
+  </script>
+</body>
+</html>
