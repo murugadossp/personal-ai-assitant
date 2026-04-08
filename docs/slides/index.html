@@ -17,6 +17,7 @@
       --glass-highlight: rgba(255, 255, 255, 0.85);
       --text: #1a1f36;
       --text-soft: #5c6578;
+      --text-muted: #7b8494;
       --accent: #4f6ef7;
       --accent-soft: rgba(79, 110, 247, 0.12);
       --shadow: 0 24px 80px rgba(31, 38, 135, 0.08), 0 8px 32px rgba(79, 110, 247, 0.06);
@@ -272,6 +273,90 @@
       color: var(--text-soft);
       font-weight: 600;
       user-select: none;
+    }
+
+    /* Layered architecture stack (diagram) */
+    .arch-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1rem 0 1.35rem;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 8px 28px rgba(79, 110, 247, 0.07);
+    }
+
+    .arch-layer {
+      display: grid;
+      grid-template-columns: minmax(7rem, 9.5rem) 1fr;
+      gap: 0.65rem 1rem;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .arch-layer:last-child {
+      border-bottom: none;
+    }
+
+    .arch-layer .layer-name {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+
+    .arch-layer .layer-body {
+      color: var(--text-soft);
+    }
+
+    .arch-layer .layer-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .arch-layer.client {
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .arch-layer.assistant {
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .arch-layer.assistant .subpill {
+      display: inline-block;
+      margin: 0.2rem 0.35rem 0 0;
+      padding: 0.2rem 0.55rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    .arch-layer.mcp-layer {
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .arch-layer.google-layer {
+      background: rgba(16, 185, 129, 0.09);
+    }
+
+    .arch-stack-cue {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0.2rem 0;
+      background: rgba(255, 255, 255, 0.35);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .arch-legend {
@@ -634,10 +719,36 @@
         <article class="slide" data-slide="1" aria-label="Slide 2">
           <div class="slide-card">
             <span class="slide-label">Architecture</span>
-            <h1>Coordinator, one workspace agent, MCP outside</h1>
+            <h1>Architecture diagram of the proposed solution:</h1>
+            <h2>Coordinator, one workspace agent, MCP outside</h2>
+            <div class="arch-stack" role="img" aria-label="Layered architecture: client, assistant service, MCP, Google APIs">
+              <div class="arch-stack-cue">Top → bottom · data &amp; control flow</div>
+              <div class="arch-layer client">
+                <div class="layer-name">Client</div>
+                <div class="layer-body">Browser, <strong>ADK Web UI</strong>, or <strong>FastAPI</strong> <code style="font-size:0.85em">/api/chat</code> — where the user types.</div>
+              </div>
+              <div class="arch-layer assistant">
+                <div class="layer-name">Assistant</div>
+                <div class="layer-body">
+                  <span class="subpill" style="border-color:rgba(124,58,237,.25)">Coordinator</span> ADK root, routing ·
+                  <span class="subpill" style="border-color:rgba(37,99,235,.3)">Workspace agent</span> MCP toolset, Gemini
+                  <br /><span style="opacity:0.92">Package: <code style="font-size:0.8em">personal-ai-assistant/</code></span>
+                </div>
+              </div>
+              <div class="arch-layer mcp-layer">
+                <div class="layer-name">MCP server</div>
+                <div class="layer-body"><strong>Streamable HTTP</strong> · OAuth · tokens · <code style="font-size:0.8em">calendar_*</code> <code style="font-size:0.8em">gmail_*</code> <code style="font-size:0.8em">drive_*</code>
+                  <br /><span style="opacity:0.92"><code style="font-size:0.8em">mcp-servers/google_workspace/</code></span></div>
+              </div>
+              <div class="arch-layer google-layer">
+                <div class="layer-name">Google Cloud</div>
+                <div class="layer-body"><strong>Calendar</strong>, <strong>Gmail</strong>, <strong>Drive</strong> REST APIs — real user data via OAuth.</div>
+              </div>
+            </div>
             <p>
               The ADK app root is the <strong>coordinator</strong>: it classifies intent, handles chit-chat, and delegates with <code style="font-size:0.9em">transfer_to_agent("workspace_agent")</code>. There are <strong>no separate Calendar/Gmail/Drive agents</strong>—one workspace specialist carries the full MCP toolset.
             </p>
+            <p style="font-size:0.92rem;color:var(--text-soft);margin-bottom:0.65rem"><strong>Request path (horizontal)</strong> — same actors, left to right:</p>
             <div class="arch-flow" role="img" aria-label="Flow: User, then Coordinator, Workspace agent, Workspace MCP, Google APIs">
               <span class="arch-node user">User</span>
               <span class="arch-arrow">→</span>
@@ -822,7 +933,7 @@
         </button>
         <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-1" id="tab-1" data-index="1">
           <div class="thumb-index">02</div>
-          <div class="thumb-title">Architecture</div>
+          <div class="thumb-title">Architecture diagram</div>
         </button>
         <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-2" id="tab-2" data-index="2">
           <div class="thumb-index">03</div>
