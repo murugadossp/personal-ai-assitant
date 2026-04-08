@@ -462,6 +462,55 @@
       margin: 0.32rem 0;
     }
 
+    .slide-subprompt {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      font-style: italic;
+      margin: -0.35rem 0 1.1rem;
+      line-height: 1.5;
+      max-width: 95ch;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.1rem 1.35rem;
+      margin: 0.85rem 0 0;
+    }
+
+    .tech-col {
+      padding: 1rem 1.15rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.38);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+
+    .tech-col h3 {
+      font-family: "Outfit", sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.55rem;
+    }
+
+    .tech-col ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .tech-col li {
+      margin: 0.35rem 0;
+    }
+
+    .tech-col li strong {
+      color: var(--text);
+    }
+
     /* Process / use-case diagram */
     .flow-section-title {
       font-family: "Outfit", sans-serif;
@@ -921,6 +970,53 @@
             </div>
           </div>
         </article>
+
+        <article class="slide" data-slide="6" aria-label="Slide 7">
+          <div class="slide-card">
+            <span class="slide-label">Stack</span>
+            <h1>Technologies / Google Services used in the solution</h1>
+            <p class="slide-subprompt">
+              Why this AI stack and system design — and how they support scalability and real-world deployment.
+            </p>
+            <div class="tech-grid">
+              <div class="tech-col">
+                <h3>AI &amp; agents</h3>
+                <ul>
+                  <li><strong>Google Gemini</strong> for coordinator + workspace agents (<code style="font-size:0.85em">config.yaml</code>, per-agent <code style="font-size:0.85em">model_candidates</code>).</li>
+                  <li><strong>Fallback chain</strong> (<code style="font-size:0.85em">FallbackGeminiLlm</code>) for quota / rate-limit resilience without code changes.</li>
+                  <li><strong>Google ADK</strong> — multi-agent orchestration, tools, <code style="font-size:0.85em">transfer_to_agent</code>, optional ADK Web UI.</li>
+                  <li><strong>Python 3.12</strong> assistant runtime; MCP server on Python 3.11 in container.</li>
+                </ul>
+              </div>
+              <div class="tech-col">
+                <h3>Integration layer</h3>
+                <ul>
+                  <li><strong>Model Context Protocol (MCP)</strong> — official SDK, <strong>Streamable HTTP</strong> transport.</li>
+                  <li><strong>FastMCP</strong>-style tool definitions on the Workspace server.</li>
+                  <li><strong>Google Calendar API v3</strong>, <strong>Gmail API v1</strong>, <strong>Drive API v3</strong> via <code style="font-size:0.85em">google-api-python-client</code>.</li>
+                  <li><strong>OAuth 2.0</strong> (user consent, refresh tokens) handled on the MCP service, not in the LLM prompt.</li>
+                </ul>
+              </div>
+              <div class="tech-col">
+                <h3>Google Cloud &amp; deploy</h3>
+                <ul>
+                  <li><strong>Cloud Run</strong> — separate services for <strong>assistant</strong> and <strong>Workspace MCP</strong>; independent scale, memory, and rollouts.</li>
+                  <li><strong>Cloud Firestore</strong> (optional <code style="font-size:0.85em">TOKEN_BACKEND=firestore</code>) for durable per-user tokens across instances.</li>
+                  <li><strong>IAM</strong> — service account roles (e.g. datastore access) for MCP; least-privilege API clients.</li>
+                  <li><strong>Secret Manager</strong> — recommended pattern for <code style="font-size:0.85em">GOOGLE_API_KEY</code> / secrets in production (see deploy scripts).</li>
+                  <li><strong>Vertex AI</strong> path supported via environment flags where you choose Google Cloud inference over consumer API keys.</li>
+                </ul>
+              </div>
+            </div>
+            <h2 style="margin-top:1.25rem">Design rationale</h2>
+            <ul style="margin-top:0.45rem;font-size:0.92rem;color:var(--text-soft)">
+              <li><strong>Split assistant vs MCP</strong> — scale chat load separately from OAuth/tool traffic; swap or harden the tool server without redeploying the LLM app.</li>
+              <li><strong>MCP as contract</strong> — clear tool schema, easier testing and future non-Google backends behind the same agent.</li>
+              <li><strong>Config-first models</strong> — change Gemini SKUs and fallback order in YAML for demos vs production without branching code.</li>
+              <li><strong>Stateless-ish assistant + persisted tokens on MCP</strong> — matches how Cloud Run and multi-instance MCP replicas behave in production.</li>
+            </ul>
+          </div>
+        </article>
       </div>
     </div>
 
@@ -951,8 +1047,12 @@
           <div class="thumb-index">06</div>
           <div class="thumb-title">Process / use-case</div>
         </button>
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-6" id="tab-6" data-index="6">
+          <div class="thumb-index">07</div>
+          <div class="thumb-title">Tech &amp; Google Cloud</div>
+        </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 6</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 7</p>
     </div>
   </div>
 
