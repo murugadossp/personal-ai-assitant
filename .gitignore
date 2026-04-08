@@ -1,0 +1,55 @@
+# =============================================================================
+# Monorepo: personal-ai-assistant + mcp-servers — keep secrets and local data out
+# =============================================================================
+
+# Environment (never commit real values)
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Google OAuth / API credentials
+**/credentials.json
+**/client_secret*.json
+**/*.keys.json
+**/gcp-oauth.keys.json
+**/.tokens/
+**/token.json
+**/authorized_user.json
+
+# Local databases & ADK caches
+*.db
+**/.adk/
+
+# Python
+.venv/
+venv/
+**/.venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node (if added under mcp-servers)
+node_modules/
+
+# Logs & OS
+*.log
+.DS_Store
+.idea/
+.vscode/
+.cursor/
+
+# Tooling / local
+*.swp
+*~

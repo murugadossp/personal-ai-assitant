@@ -1,0 +1,22 @@
+[project]
+name = "personal-ai-assistant"
+version = "0.0.0"
+description = "Google ADK multi-agent personal assistant"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.111.0",
+  "uvicorn>=0.30.1",
+  "pydantic>=2.7.4",
+  # MCP streamable HTTP needs AnyIO 4+ (subscriptable create_memory_object_stream).
+  "anyio>=4.0",
+  "google-adk>=0.1.0",
+  "mcp>=0.1.0",
+  "python-dotenv>=1.0.1",
+  "PyYAML>=6.0.1",
+  "rich>=13.7.1",
+]
+
+# Application layout uses `app/` on PYTHONPATH; no installable wheel needed.
+[tool.uv]
+package = false

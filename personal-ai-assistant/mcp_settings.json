@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-workspace": {
+      "transport": "streamable_http",
+      "url": "https://google-workspace-mcp-792134771565.asia-south1.run.app/mcp"
+    }
+  }
+}

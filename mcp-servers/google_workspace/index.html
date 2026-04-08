@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Workspace MCP Server — Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1e293b;
+  --text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;
+  --red:#ef4444;--cyan:#06b6d4;--pink:#ec4899;
+  --gradient:linear-gradient(135deg,#8b5cf6,#ec4899,#f59e0b);
+  --glass-border:rgba(255,255,255,0.08);
+  --code-bg:#0d1117;--code-text:#c9d1d9;
+  --card-shadow:rgba(0,0,0,.3);
+  --radius:16px;--radius-sm:10px;
+}
+[data-theme="light"]{
+  --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;
+  --text:#0f172a;--text-dim:#475569;--text-muted:#94a3b8;
+  --glass-border:rgba(0,0,0,0.1);
+  --code-bg:#f6f8fa;--code-text:#24292e;
+  --card-shadow:rgba(0,0,0,.08);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;transition:background .3s,color .3s}
+.theme-toggle{position:fixed;top:1.25rem;right:1.25rem;z-index:1000;width:48px;height:48px;border-radius:50%;border:1px solid var(--glass-border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:all .3s;box-shadow:0 4px 12px var(--card-shadow)}
+.theme-toggle:hover{transform:scale(1.1);border-color:var(--purple)}
+.hero{min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);top:-200px;left:50%;transform:translateX(-50%)}
+.hero h1{font-size:clamp(2rem,4.5vw,3.5rem);font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem;position:relative;z-index:1}
+.hero p{font-size:1.1rem;color:var(--text-dim);max-width:650px;position:relative;z-index:1}
+.badge-row{display:flex;gap:.6rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center;z-index:1;position:relative}
+.badge{padding:.35rem .9rem;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid var(--glass-border)}
+.badge.p{background:rgba(139,92,246,.15);color:#a78bfa}.badge.g{background:rgba(16,185,129,.15);color:#34d399}
+.badge.b{background:rgba(59,130,246,.15);color:#60a5fa}.badge.a{background:rgba(245,158,11,.15);color:#fbbf24}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem 4rem}
+.section-title{font-size:1.6rem;font-weight:700;margin:3rem 0 1.25rem;display:flex;align-items:center;gap:.6rem}
+.grid{display:grid;gap:1.25rem}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.5rem;transition:all .3s;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(139,92,246,.3);transform:translateY(-3px);box-shadow:0 16px 32px var(--card-shadow)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.card p{color:var(--text-dim);font-size:.9rem}
+.endpoint{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;margin:.4rem 0;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--glass-border);transition:all .2s}
+.endpoint:hover{border-color:rgba(139,92,246,.3)}
+.method{padding:.2rem .5rem;border-radius:6px;font-weight:700;font-size:.7rem;font-family:'JetBrains Mono',monospace;min-width:48px;text-align:center}
+.method.post{background:rgba(59,130,246,.2);color:#60a5fa}
+.method.get{background:rgba(16,185,129,.2);color:#34d399}
+.method.del{background:rgba(239,68,68,.2);color:#f87171}
+.endpoint .path{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text)}
+.endpoint .desc{color:var(--text-dim);font-size:.8rem;margin-left:auto}
+.tool-group{margin:1.5rem 0}
+.tool-group h4{font-size:1rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.tool-item{display:flex;align-items:center;padding:.6rem 1rem;margin:.3rem 0;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--glass-border);transition:all .2s;cursor:pointer}
+.tool-item:hover{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.05)}
+.tool-name{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--cyan);min-width:220px}
+.tool-desc{color:var(--text-dim);font-size:.82rem}
+.code-block{background:var(--code-bg);border-radius:var(--radius-sm);padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;overflow-x:auto;margin:.75rem 0;border:1px solid var(--glass-border);color:var(--code-text);line-height:1.6}
+.flow-card{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:2rem}
+.flow-step{display:flex;align-items:flex-start;gap:1rem;padding:.85rem 0;position:relative}
+.flow-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:44px;bottom:0;width:2px;background:var(--glass-border)}
+.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;border:2px solid}
+.step-dot.b{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.3)}
+.step-dot.p{background:rgba(139,92,246,.12);color:var(--purple);border-color:rgba(139,92,246,.3)}
+.step-dot.g{background:rgba(16,185,129,.12);color:var(--green);border-color:rgba(16,185,129,.3)}
+.step-dot.a{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.3)}
+.step-dot.r{background:rgba(239,68,68,.12);color:var(--red);border-color:rgba(239,68,68,.3)}
+.step-text h4{font-size:.95rem;font-weight:600;margin-bottom:.15rem}
+.step-text p{color:var(--text-dim);font-size:.85rem}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0}
+.stat{text-align:center;padding:1.5rem;background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius)}
+.stat-num{font-size:2rem;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:.8rem;color:var(--text-dim);margin-top:.25rem}
+.env-table{width:100%;border-collapse:collapse;margin:1rem 0}
+.env-table th{text-align:left;padding:.6rem .75rem;background:var(--surface2);font-weight:600;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em}
+.env-table td{padding:.6rem .75rem;border-bottom:1px solid var(--glass-border);font-size:.85rem}
+.env-table code{background:var(--surface2);padding:.1rem .4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--cyan)}
+footer{text-align:center;padding:3rem 2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--glass-border)}
+@media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.tool-name{min-width:auto}}
+</style>
+</head>
+<body data-theme="dark">
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme" id="themeBtn">🌙</button>
+
+<div class="hero">
+  <h1>🔌 Google Workspace MCP Server</h1>
+  <p>Multi-user MCP server providing AI agents with secure OAuth-based access to Google Calendar, Gmail, and Drive.</p>
+  <div class="badge-row">
+    <span class="badge p">FastMCP v1.27</span>
+    <span class="badge b">Streamable HTTP</span>
+    <span class="badge g">Multi-User OAuth</span>
+    <span class="badge a">Cloud Run Ready</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num">16</div><div class="stat-label">MCP Tools</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Google Services</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">HTTP Endpoints</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Users Supported</div></div>
+  </div>
+
+  <!-- Endpoints -->
+  <div class="section-title">🌐 HTTP Endpoints</div>
+  <div class="endpoint"><span class="method post">POST</span><span class="path">/mcp</span><span class="desc">MCP Protocol (Streamable HTTP)</span></div>
+  <div class="endpoint"><span class="method get">GET</span><span class="path">/auth?user_id=xxx</span><span class="desc">Start OAuth flow</span></div>
+  <div class="endpoint"><span class="method get">GET</span><span class="path">/auth/callback</span><span class="desc">OAuth callback from Google</span></div>
+  <div class="endpoint"><span class="method get">GET</span><span class="path">/auth/status/{user_id}</span><span class="desc">Check authorization status</span></div>
+  <div class="endpoint"><span class="method get">GET</span><span class="path">/health</span><span class="desc">Health check</span></div>
+
+  <!-- OAuth Flow -->
+  <div class="section-title">🔐 Multi-User OAuth Flow</div>
+  <div class="grid grid-2">
+    <div class="flow-card">
+      <h3 style="margin-bottom:1rem">First-Time Authorization</h3>
+      <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Agent calls MCP tool</h4><p>Tool returns "User not authorized" + auth URL</p></div></div>
+      <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>User opens auth URL</h4><p>Server generates state token, redirects to Google</p></div></div>
+      <div class="flow-step"><div class="step-dot a">3</div><div class="step-text"><h4>Google consent screen</h4><p>"Allow Calendar, Gmail, Drive access?"</p></div></div>
+      <div class="flow-step"><div class="step-dot g">4</div><div class="step-text"><h4>User clicks Allow</h4><p>Google sends code to /auth/callback</p></div></div>
+      <div class="flow-step"><div class="step-dot g">5</div><div class="step-text"><h4>Tokens stored</h4><p>access_token + refresh_token saved per user</p></div></div>
+    </div>
+    <div class="flow-card">
+      <h3 style="margin-bottom:1rem">Subsequent API Calls</h3>
+      <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Agent calls MCP tool</h4><p>e.g. calendar_list_events(user_id="user1")</p></div></div>
+      <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Token loaded from store</h4><p>Local file (.tokens/) or Firestore</p></div></div>
+      <div class="flow-step"><div class="step-dot a">3</div><div class="step-text"><h4>Auto-refresh if expired</h4><p>Uses refresh_token → new access_token</p></div></div>
+      <div class="flow-step"><div class="step-dot g">4</div><div class="step-text"><h4>Google API called</h4><p>Bearer token in Authorization header</p></div></div>
+      <div class="flow-step"><div class="step-dot g">5</div><div class="step-text"><h4>Data returned via MCP</h4><p>JSON result sent back to agent</p></div></div>
+    </div>
+  </div>
+
+  <!-- Tools Reference -->
+  <div class="section-title">🛠️ Tools Reference</div>
+  
+  <div class="tool-group">
+    <h4>🔐 Auth (2 tools)</h4>
+    <div class="tool-item"><span class="tool-name">auth_check_status</span><span class="tool-desc">Check if user has authorized. Returns auth_url if not.</span></div>
+    <div class="tool-item"><span class="tool-name">auth_revoke</span><span class="tool-desc">Revoke user's stored OAuth tokens.</span></div>
+  </div>
+
+  <div class="tool-group">
+    <h4>📅 Calendar (6 tools)</h4>
+    <div class="tool-item"><span class="tool-name">calendar_list_calendars</span><span class="tool-desc">List all calendars accessible to the user.</span></div>
+    <div class="tool-item"><span class="tool-name">calendar_list_events</span><span class="tool-desc">List upcoming events with optional time range.</span></div>
+    <div class="tool-item"><span class="tool-name">calendar_create_event</span><span class="tool-desc">Create event with title, time, attendees, location.</span></div>
+    <div class="tool-item"><span class="tool-name">calendar_update_event</span><span class="tool-desc">Update existing event fields.</span></div>
+    <div class="tool-item"><span class="tool-name">calendar_delete_event</span><span class="tool-desc">Delete an event by ID.</span></div>
+    <div class="tool-item"><span class="tool-name">calendar_check_availability</span><span class="tool-desc">Check free/busy status for time range.</span></div>
+  </div>
+
+  <div class="tool-group">
+    <h4>📧 Gmail (5 tools)</h4>
+    <div class="tool-item"><span class="tool-name">gmail_search_emails</span><span class="tool-desc">Search with Gmail query syntax (from:, is:unread, etc.)</span></div>
+    <div class="tool-item"><span class="tool-name">gmail_read_email</span><span class="tool-desc">Read full email content by message ID.</span></div>
+    <div class="tool-item"><span class="tool-name">gmail_send_email</span><span class="tool-desc">Send new email with to/cc/bcc, subject, body.</span></div>
+    <div class="tool-item"><span class="tool-name">gmail_reply_to_email</span><span class="tool-desc">Reply to an email thread preserving threading.</span></div>
+    <div class="tool-item"><span class="tool-name">gmail_list_labels</span><span class="tool-desc">List all Gmail labels (INBOX, SENT, custom).</span></div>
+  </div>
+
+  <div class="tool-group">
+    <h4>📁 Drive (3 tools)</h4>
+    <div class="tool-item"><span class="tool-name">drive_list_files</span><span class="tool-desc">List files with optional query and folder filter.</span></div>
+    <div class="tool-item"><span class="tool-name">drive_search_files</span><span class="tool-desc">Search files by name.</span></div>
+    <div class="tool-item"><span class="tool-name">drive_read_file</span><span class="tool-desc">Read file content. Auto-exports Google Docs as text.</span></div>
+  </div>
+
+  <!-- Token Storage -->
+  <div class="section-title">💾 Token Storage</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>🗂️ Local (Development)</h3>
+      <p>Per-user JSON files in <code>.tokens/</code> directory. Simple, no external dependencies. Set <code>TOKEN_BACKEND=local</code>.</p>
+      <div class="code-block">.tokens/
+├── user1.json    # {token, refresh_token, ...}
+├── judge1.json
+└── demo-user.json</div>
+    </div>
+    <div class="card">
+      <h3>🔥 Firestore (Production)</h3>
+      <p>Google Cloud Firestore collection <code>mcp_user_tokens</code>. Serverless, auto-scales, encrypted at rest. Set <code>TOKEN_BACKEND=firestore</code>.</p>
+      <div class="code-block">Firestore: mcp_user_tokens/
+├── user1       # {token, refresh_token, ...}
+├── judge1      # {token, refresh_token, ...}
+└── demo-user   # {token, refresh_token, ...}</div>
+    </div>
+  </div>
+
+  <!-- Configuration -->
+  <div class="section-title">⚙️ Configuration</div>
+  <table class="env-table">
+    <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>MCP_TRANSPORT</code></td><td>stdio</td><td>Transport mode: stdio, sse, streamable-http</td></tr>
+      <tr><td><code>PORT</code></td><td>8080</td><td>HTTP server port</td></tr>
+      <tr><td><code>BASE_URL</code></td><td>http://localhost:8080</td><td>Base URL for OAuth redirects</td></tr>
+      <tr><td><code>TOKEN_BACKEND</code></td><td>local</td><td>Token storage: local or firestore</td></tr>
+      <tr><td><code>GCP_PROJECT</code></td><td>personal-ai-agent-492408</td><td>GCP project for Firestore</td></tr>
+      <tr><td><code>GOOGLE_OAUTH_CREDENTIALS</code></td><td>./credentials.json</td><td>Path to OAuth Client ID file</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Quick Start -->
+  <div class="section-title">🚀 Quick Start</div>
+  <div class="flow-card">
+    <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Activate venv & start server</h4><div class="code-block">source .venv/bin/activate
+MCP_TRANSPORT=streamable-http python server.py</div></div></div>
+    <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Authorize your account</h4><div class="code-block">open http://localhost:8080/auth?user_id=your-name</div></div></div>
+    <div class="flow-step"><div class="step-dot g">3</div><div class="step-text"><h4>Test with curl</h4><div class="code-block">curl http://localhost:8080/health
+curl http://localhost:8080/auth/status/your-name</div></div></div>
+  </div>
+</div>
+
+<footer>
+  <p>Google Workspace MCP Server · Built with FastMCP & Python 3.12 · Cloud Run Ready</p>
+</footer>
+<script>
+function toggleTheme(){
+  const body=document.body, btn=document.getElementById('themeBtn');
+  if(body.getAttribute('data-theme')==='dark'){body.setAttribute('data-theme','light');btn.textContent='☀️';localStorage.setItem('theme','light');}
+  else{body.setAttribute('data-theme','dark');btn.textContent='🌙';localStorage.setItem('theme','dark');}
+}
+(function(){const s=localStorage.getItem('theme');if(s==='light'){document.body.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️';}})();
+</script>
+</body>
+</html>

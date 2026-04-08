@@ -1,0 +1,9 @@
+.venv
+__pycache__
+*.pyc
+.tokens
+.env
+credentials.json
+.git
+.gitignore
+*.md

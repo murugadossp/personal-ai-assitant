@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal AI Assistant — Agent System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1e293b;
+  --text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;
+  --red:#ef4444;--cyan:#06b6d4;--pink:#ec4899;
+  --gradient:linear-gradient(135deg,#3b82f6,#10b981,#06b6d4);
+  --glass-border:rgba(255,255,255,0.08);
+  --code-bg:#0d1117;--code-text:#c9d1d9;
+  --card-shadow:rgba(0,0,0,.3);
+  --radius:16px;--radius-sm:10px;
+}
+[data-theme="light"]{
+  --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;
+  --text:#0f172a;--text-dim:#475569;--text-muted:#94a3b8;
+  --glass-border:rgba(0,0,0,0.1);
+  --code-bg:#f6f8fa;--code-text:#24292e;
+  --card-shadow:rgba(0,0,0,.08);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;transition:background .3s,color .3s}
+.theme-toggle{position:fixed;top:1.25rem;right:1.25rem;z-index:1000;width:48px;height:48px;border-radius:50%;border:1px solid var(--glass-border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:all .3s;box-shadow:0 4px 12px var(--card-shadow)}
+.theme-toggle:hover{transform:scale(1.1);border-color:var(--blue)}
+.hero{min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%);top:-150px;right:-100px}
+.hero::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,.12),transparent 70%);bottom:-100px;left:-100px}
+.hero h1{font-size:clamp(2rem,4.5vw,3.5rem);font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem;position:relative;z-index:1}
+.hero p{font-size:1.1rem;color:var(--text-dim);max-width:650px;position:relative;z-index:1}
+.badge-row{display:flex;gap:.6rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center;z-index:1;position:relative}
+.badge{padding:.35rem .9rem;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid var(--glass-border)}
+.badge.b{background:rgba(59,130,246,.15);color:#60a5fa}.badge.g{background:rgba(16,185,129,.15);color:#34d399}
+.badge.p{background:rgba(139,92,246,.15);color:#a78bfa}.badge.c{background:rgba(6,182,212,.15);color:#22d3ee}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem 4rem}
+.section-title{font-size:1.6rem;font-weight:700;margin:3rem 0 1.25rem;display:flex;align-items:center;gap:.6rem}
+.grid{display:grid;gap:1.25rem}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.5rem;transition:all .3s;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-3px);box-shadow:0 16px 32px var(--card-shadow)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.card p{color:var(--text-dim);font-size:.9rem}
+.agent-card{padding:2rem;text-align:center}
+.agent-icon{font-size:3rem;margin-bottom:1rem}
+.agent-name{font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
+.agent-model{font-size:.8rem;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:.75rem}
+.agent-role{color:var(--text-dim);font-size:.88rem;margin-bottom:1rem}
+.agent-tools{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
+.agent-tool{padding:.2rem .5rem;border-radius:5px;font-size:.72rem;font-weight:600;background:var(--surface2);color:var(--text-dim);border:1px solid var(--glass-border)}
+.flow-card{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:2rem;margin:1rem 0}
+.flow-step{display:flex;align-items:flex-start;gap:1rem;padding:.85rem 0;position:relative}
+.flow-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:44px;bottom:0;width:2px;background:var(--glass-border)}
+.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;border:2px solid}
+.step-dot.b{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.3)}
+.step-dot.p{background:rgba(139,92,246,.12);color:var(--purple);border-color:rgba(139,92,246,.3)}
+.step-dot.g{background:rgba(16,185,129,.12);color:var(--green);border-color:rgba(16,185,129,.3)}
+.step-dot.a{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.3)}
+.step-dot.c{background:rgba(6,182,212,.12);color:var(--cyan);border-color:rgba(6,182,212,.3)}
+.step-text h4{font-size:.95rem;font-weight:600;margin-bottom:.15rem}
+.step-text p{color:var(--text-dim);font-size:.85rem}
+.code-block{background:var(--code-bg);border-radius:var(--radius-sm);padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;overflow-x:auto;margin:.5rem 0;border:1px solid var(--glass-border);color:var(--code-text);line-height:1.6}
+.file-tree{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.5rem}
+.file-item{display:flex;align-items:center;gap:.5rem;padding:.35rem 0;font-size:.88rem}
+.file-item .icon{width:20px;text-align:center}
+.file-item .name{font-family:'JetBrains Mono',monospace;font-size:.82rem}
+.file-item .desc{color:var(--text-dim);font-size:.78rem;margin-left:auto}
+.file-item.indent{padding-left:1.5rem}
+.file-item.indent2{padding-left:3rem}
+.connector{height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted)}
+.connector .line{width:2px;height:16px;background:var(--text-muted)}
+.connector .label{font-size:.75rem;padding:.2rem .6rem;border-radius:4px;background:var(--surface2);border:1px solid var(--glass-border)}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.25rem;overflow-x:auto}
+.tab{padding:.45rem 1.1rem;border-radius:999px;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid var(--glass-border);background:transparent;color:var(--text-dim);transition:all .2s;white-space:nowrap}
+.tab.active,.tab:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab-content{display:none}.tab-content.active{display:block}
+.arch-visual{text-align:center;padding:2rem 0}
+.arch-row{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin:.5rem 0}
+.arch-node{display:inline-flex;flex-direction:column;align-items:center;padding:.75rem 1.25rem;border-radius:var(--radius-sm);min-width:120px;border:1.5px solid}
+.arch-node.coord{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3)}
+.arch-node.sub{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
+.arch-node.mcp{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3)}
+.arch-node .n{font-weight:700;font-size:.85rem}
+.arch-node .s{font-size:.72rem;color:var(--text-dim)}
+footer{text-align:center;padding:3rem 2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--glass-border)}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-theme="dark">
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme" id="themeBtn">🌙</button>
+
+<div class="hero">
+  <h1>🤖 Personal AI Assistant</h1>
+  <p>Multi-agent system built with Google ADK and Gemini 2.5 Flash. Orchestrates Calendar, Gmail, and Drive through intelligent agent delegation.</p>
+  <div class="badge-row">
+    <span class="badge b">Google ADK</span>
+    <span class="badge g">Gemini 2.5 Flash</span>
+    <span class="badge p">MCP Protocol</span>
+    <span class="badge c">FastAPI</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Agent Cards -->
+  <div class="section-title">🎯 Agent System</div>
+  <div class="grid grid-2" style="margin-bottom:1rem">
+    <div class="card agent-card" style="grid-column:1/-1;max-width:500px;justify-self:center;width:100%">
+      <div class="agent-icon">🎯</div>
+      <div class="agent-name">Coordinator Agent</div>
+      <div class="agent-model">gemini-2.5-flash</div>
+      <div class="agent-role">Understands user intent and delegates to the right specialist agent. Handles multi-turn conversations and formats final responses.</div>
+      <div class="agent-tools">
+        <span class="agent-tool">transfer_to_agent</span>
+        <span class="agent-tool">intent_classification</span>
+        <span class="agent-tool">response_formatting</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="grid grid-3">
+    <div class="card agent-card">
+      <div class="agent-icon">📅</div>
+      <div class="agent-name">Calendar Agent</div>
+      <div class="agent-model">gemini-2.5-flash</div>
+      <div class="agent-role">Manages calendar events — scheduling, listing, updating, checking availability.</div>
+      <div class="agent-tools">
+        <span class="agent-tool">list_events</span>
+        <span class="agent-tool">create_event</span>
+        <span class="agent-tool">update_event</span>
+        <span class="agent-tool">delete_event</span>
+        <span class="agent-tool">check_availability</span>
+      </div>
+    </div>
+    <div class="card agent-card">
+      <div class="agent-icon">📧</div>
+      <div class="agent-name">Gmail Agent</div>
+      <div class="agent-model">gemini-2.5-flash</div>
+      <div class="agent-role">Handles email operations — search, read, send, reply, and label management.</div>
+      <div class="agent-tools">
+        <span class="agent-tool">search_emails</span>
+        <span class="agent-tool">read_email</span>
+        <span class="agent-tool">send_email</span>
+        <span class="agent-tool">reply_to_email</span>
+        <span class="agent-tool">list_labels</span>
+      </div>
+    </div>
+    <div class="card agent-card">
+      <div class="agent-icon">📁</div>
+      <div class="agent-name">Drive Agent</div>
+      <div class="agent-model">gemini-2.5-flash</div>
+      <div class="agent-role">Manages Google Drive files — listing, searching, and reading documents.</div>
+      <div class="agent-tools">
+        <span class="agent-tool">list_files</span>
+        <span class="agent-tool">search_files</span>
+        <span class="agent-tool">read_file</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow Visualization -->
+  <div class="section-title">🔄 Request Lifecycle</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">Calendar Query</div>
+    <div class="tab" onclick="switchTab(1)">Send Email</div>
+    <div class="tab" onclick="switchTab(2)">Cross-Service</div>
+  </div>
+
+  <div class="tab-content active" id="tab-0">
+    <div class="flow-card">
+      <h3 style="margin-bottom:1rem">"What's on my calendar tomorrow?"</h3>
+      <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>User sends message</h4><p>Message arrives via FastAPI / ADK Web UI</p></div></div>
+      <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Coordinator classifies intent</h4><p>Gemini: "This is a calendar query" → delegates to Calendar Agent</p></div></div>
+      <div class="flow-step"><div class="step-dot c">3</div><div class="step-text"><h4>Calendar Agent selects tool</h4><p>Calls <code style="color:var(--cyan)">calendar_list_events(user_id, time_min="tomorrow")</code></p></div></div>
+      <div class="flow-step"><div class="step-dot a">4</div><div class="step-text"><h4>MCP Server processes</h4><p>Loads user's OAuth token → calls Google Calendar API → returns events</p></div></div>
+      <div class="flow-step"><div class="step-dot g">5</div><div class="step-text"><h4>Natural language response</h4><p>"You have 3 meetings tomorrow: Team Standup at 10 AM, Design Review at 2 PM, 1:1 with Manager at 4 PM"</p></div></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-1">
+    <div class="flow-card">
+      <h3 style="margin-bottom:1rem">"Send an email to John about the project update"</h3>
+      <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Coordinator → Gmail Agent</h4><p>Intent: email composition</p></div></div>
+      <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Agent drafts email content</h4><p>Gemini generates professional email body based on context</p></div></div>
+      <div class="flow-step"><div class="step-dot c">3</div><div class="step-text"><h4>MCP tool: gmail_send_email</h4><p>to: john@company.com, subject: "Project Update", body: ...</p></div></div>
+      <div class="flow-step"><div class="step-dot g">4</div><div class="step-text"><h4>Confirmation</h4><p>"✅ Email sent to John about the project update"</p></div></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-2">
+    <div class="flow-card">
+      <h3 style="margin-bottom:1rem">"Read my latest email and schedule a meeting based on it"</h3>
+      <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Coordinator delegates first to Gmail Agent</h4><p>Reads the latest email → extracts meeting request details</p></div></div>
+      <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Coordinator then delegates to Calendar Agent</h4><p>Uses extracted info to create a new calendar event</p></div></div>
+      <div class="flow-step"><div class="step-dot g">3</div><div class="step-text"><h4>Combined response</h4><p>"I read the email from Sarah about the quarterly review. I've scheduled it for Friday at 3 PM."</p></div></div>
+    </div>
+  </div>
+
+  <!-- Architecture Detail -->
+  <div class="section-title">🏗️ Architecture</div>
+  <div class="arch-visual">
+    <div class="arch-row">
+      <div class="arch-node coord"><span style="font-size:1.3rem">👤</span><span class="n">User</span><span class="s">Browser / Chat / API</span></div>
+    </div>
+    <div class="connector"><div class="line"></div><div class="label">HTTP / SSE</div><div class="line"></div></div>
+    <div class="arch-row">
+      <div class="arch-node coord"><span style="font-size:1.3rem">🎯</span><span class="n">Coordinator</span><span class="s">Gemini 2.5 Flash</span></div>
+    </div>
+    <div class="connector"><div class="line"></div><div class="label">transfer_to_agent</div><div class="line"></div></div>
+    <div class="arch-row">
+      <div class="arch-node sub"><span>📅</span><span class="n">Calendar</span></div>
+      <div class="arch-node sub"><span>📧</span><span class="n">Gmail</span></div>
+      <div class="arch-node sub"><span>📁</span><span class="n">Drive</span></div>
+    </div>
+    <div class="connector"><div class="line"></div><div class="label">MCP (Streamable HTTP)</div><div class="line"></div></div>
+    <div class="arch-row">
+      <div class="arch-node mcp"><span>🔌</span><span class="n">MCP Server</span><span class="s">16 tools + OAuth</span></div>
+    </div>
+    <div class="connector"><div class="line"></div><div class="label">Google REST APIs</div><div class="line"></div></div>
+    <div class="arch-row">
+      <div class="arch-node" style="background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.3)"><span class="n">Google Workspace</span><span class="s">Calendar · Gmail · Drive</span></div>
+    </div>
+  </div>
+
+  <!-- File Structure -->
+  <div class="section-title">📂 File Structure</div>
+  <div class="file-tree">
+    <div class="file-item"><span class="icon">📁</span><span class="name">app/</span></div>
+    <div class="file-item indent"><span class="icon">📁</span><span class="name">agents/</span></div>
+    <div class="file-item indent2"><span class="icon">📁</span><span class="name">coordinator/</span><span class="desc">Orchestrator agent</span></div>
+    <div class="file-item indent2"><span class="icon">📁</span><span class="name">calendar/</span><span class="desc">Calendar specialist</span></div>
+    <div class="file-item indent"><span class="icon">📁</span><span class="name">utils/</span></div>
+    <div class="file-item indent2"><span class="icon">📄</span><span class="name">mcp.py</span><span class="desc">MCP connection manager</span></div>
+    <div class="file-item indent"><span class="icon">📄</span><span class="name">config.py</span><span class="desc">Model & agent configuration</span></div>
+    <div class="file-item indent"><span class="icon">📄</span><span class="name">main.py</span><span class="desc">FastAPI entry point</span></div>
+    <div class="file-item"><span class="icon">📄</span><span class="name">mcp_settings.json</span><span class="desc">MCP server endpoints</span></div>
+    <div class="file-item"><span class="icon">📄</span><span class="name">requirements.txt</span><span class="desc">Python dependencies</span></div>
+    <div class="file-item"><span class="icon">🔒</span><span class="name">.env</span><span class="desc">GOOGLE_API_KEY</span></div>
+  </div>
+
+  <!-- Quick Start -->
+  <div class="section-title">🚀 Quick Start</div>
+  <div class="flow-card">
+    <div class="flow-step"><div class="step-dot b">1</div><div class="step-text"><h4>Ensure MCP server is running</h4><div class="code-block">cd ../mcp-servers/google_workspace
+source .venv/bin/activate
+MCP_TRANSPORT=streamable-http python server.py</div></div></div>
+    <div class="flow-step"><div class="step-dot p">2</div><div class="step-text"><h4>Start the AI Assistant</h4><div class="code-block">source .venv/bin/activate
+adk web      # ADK dev UI
+# or
+python -m app.main  # FastAPI server</div></div></div>
+    <div class="flow-step"><div class="step-dot g">3</div><div class="step-text"><h4>Chat with your assistant</h4><p>Try: "What's on my schedule today?", "Search emails from Google", "List my Drive files"</p></div></div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section-title">📦 Tech Stack</div>
+  <div class="grid grid-3">
+    <div class="card"><h3>🧠 Google ADK</h3><p>Agent Development Kit for multi-agent orchestration with tool use, delegation, and Gemini model integration.</p></div>
+    <div class="card"><h3>⚡ Gemini 2.5 Flash</h3><p>Google's latest LLM for fast, accurate reasoning. Powers intent classification and response generation.</p></div>
+    <div class="card"><h3>🔌 MCP SDK</h3><p>Model Context Protocol for standardized tool access. Connects agents to external services via Streamable HTTP.</p></div>
+    <div class="card"><h3>🌐 FastAPI</h3><p>Modern Python web framework for serving the agent system via HTTP endpoints and SSE streaming.</p></div>
+    <div class="card"><h3>🐍 Python 3.12</h3><p>Isolated virtual environment with UV package manager for fast, reproducible dependency management.</p></div>
+    <div class="card"><h3>📋 Pydantic</h3><p>Data validation and settings management for type-safe agent configuration and request handling.</p></div>
+  </div>
+</div>
+
+<footer>
+  <p>Personal AI Assistant · Google ADK + Gemini 2.5 + MCP · Built for Google GenAI APAC 2026</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.tab-content').forEach((c,j)=>c.classList.toggle('active',j===i));
+}
+function toggleTheme(){
+  const body=document.body, btn=document.getElementById('themeBtn');
+  if(body.getAttribute('data-theme')==='dark'){body.setAttribute('data-theme','light');btn.textContent='☀️';localStorage.setItem('theme','light');}
+  else{body.setAttribute('data-theme','dark');btn.textContent='🌙';localStorage.setItem('theme','dark');}
+}
+(function(){const s=localStorage.getItem('theme');if(s==='light'){document.body.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️';}})();
+</script>
+</body>
+</html>

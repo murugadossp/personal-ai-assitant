@@ -1,0 +1,19 @@
+# Model IDs: https://ai.google.dev/gemini-api/docs/models
+#
+# `model_candidates`: try first on each request; on 429 / quota the next is used
+# (via FallbackGeminiLlm when more than one id is listed).
+# Single `model:` or a one-item list uses a plain string model (no wrapper).
+#
+# Agents: `coordinator` and `workspace` only.
+
+agents:
+  workspace:
+    model_candidates:
+      - gemini-3.1-flash-lite-preview
+      - gemini-3-flash-preview
+      - gemini-2.5-flash
+  coordinator:
+    model_candidates:
+      - gemini-3.1-flash-lite-preview
+      - gemini-3-flash-preview
+      - gemini-2.5-flash

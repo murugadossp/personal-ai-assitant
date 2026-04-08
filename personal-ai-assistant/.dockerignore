@@ -1,0 +1,13 @@
+.venv
+__pycache__
+**/__pycache__
+*.py[cod]
+.git
+.env
+*.db
+.adk
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.md
+!README.md
