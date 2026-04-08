@@ -557,6 +557,25 @@
             </ul>
           </div>
         </article>
+
+        <article class="slide" data-slide="3" aria-label="Slide 4">
+          <div class="slide-card">
+            <span class="slide-label">Build &amp; run</span>
+            <h1>From repo to a live Workspace conversation</h1>
+            <h2>Local loop</h2>
+            <ul>
+              <li>Run <strong>Workspace MCP</strong> with Streamable HTTP (<code style="font-size:0.88em">MCP_TRANSPORT=streamable-http</code>).</li>
+              <li>Run the <strong>ADK assistant</strong> (<code style="font-size:0.88em">./scripts/adk_web.sh</code> or <code style="font-size:0.88em">python -m app.main</code>); point <code style="font-size:0.88em">mcp_settings.json</code> at <code style="font-size:0.88em">…/mcp</code>.</li>
+              <li>First-time <strong>OAuth</strong> via the MCP base URL (<code style="font-size:0.88em">/auth?user_id=…</code>), then ask: <em>“What’s on my calendar?”</em>, <em>“Summarize unread mail,”</em> <em>“Find that doc in Drive.”</em></li>
+            </ul>
+            <h2>Production-shaped deploy</h2>
+            <ul>
+              <li><strong>Two services:</strong> MCP on Cloud Run (set <code style="font-size:0.88em">BASE_URL</code> to the public URL) + assistant on Cloud Run with the remote MCP URL in config.</li>
+              <li><strong>Models:</strong> Gemini IDs and <strong>fallback order</strong> in <code style="font-size:0.88em">config.yaml</code> — no code change when swapping primaries.</li>
+              <li><strong>Tokens:</strong> MCP <code style="font-size:0.88em">TOKEN_BACKEND=firestore</code> in the provided Dockerfile for durable storage across instances (override only if you mean to).</li>
+            </ul>
+          </div>
+        </article>
       </div>
     </div>
 
@@ -575,8 +594,12 @@
           <div class="thumb-index">03</div>
           <div class="thumb-title">Opportunities</div>
         </button>
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-3" id="tab-3" data-index="3">
+          <div class="thumb-index">04</div>
+          <div class="thumb-title">Build &amp; run</div>
+        </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 3</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 4</p>
     </div>
   </div>
 
