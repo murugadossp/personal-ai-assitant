@@ -377,6 +377,82 @@
       margin: 0.32rem 0;
     }
 
+    /* Process / use-case diagram */
+    .flow-section-title {
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      font-weight: 600;
+      color: var(--text);
+      margin: 1.1rem 0 0.55rem;
+      letter-spacing: -0.02em;
+    }
+
+    .flow-section-title:first-of-type {
+      margin-top: 0.2rem;
+    }
+
+    .uc-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin: 0.35rem 0 0;
+    }
+
+    .uc-step {
+      display: grid;
+      grid-template-columns: 1.65rem 1fr;
+      gap: 0.5rem 0.75rem;
+      align-items: start;
+      padding: 0.55rem 0.8rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.38);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-left-width: 3px;
+      font-size: 0.86rem;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .uc-step .uc-n {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: var(--accent);
+      line-height: 1.5;
+    }
+
+    .uc-step strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .uc-step.user {
+      border-left-color: rgb(217, 119, 6);
+    }
+
+    .uc-step.coordinator {
+      border-left-color: rgb(124, 58, 237);
+    }
+
+    .uc-step.workspace {
+      border-left-color: rgb(37, 99, 235);
+    }
+
+    .uc-step.mcp {
+      border-left-color: rgb(79, 70, 229);
+    }
+
+    .uc-step.api {
+      border-left-color: rgb(5, 150, 105);
+    }
+
+    .uc-step.reply {
+      border-left-color: rgb(124, 58, 237);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
     /* Arrow controls */
     .arrows {
       position: absolute;
@@ -660,6 +736,80 @@
             </ul>
           </div>
         </article>
+
+        <article class="slide" data-slide="5" aria-label="Slide 6">
+          <div class="slide-card">
+            <span class="slide-label">Flow</span>
+            <h1>Process flow diagram or Use-case diagram</h1>
+            <p class="flow-section-title">System process (control flow)</p>
+            <div class="arch-flow" role="img" aria-label="Request path through stack">
+              <span class="arch-node user">User</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node coordinator">Coordinator</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node workspace">Workspace agent</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node mcp">MCP tool call</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node api">Google API</span>
+            </div>
+            <p class="arch-legend" aria-hidden="true">
+              <span><i class="lg user"></i>User</span>
+              <span><i class="lg coordinator"></i>Coordinator</span>
+              <span><i class="lg workspace"></i>Workspace</span>
+              <span><i class="lg mcp"></i>MCP</span>
+              <span><i class="lg api"></i>APIs</span>
+            </p>
+            <p style="margin-top:0.35rem;font-size:0.92rem;color:var(--text-soft)">
+              Each hop is one decision boundary: delegate once, then all Workspace tools and OAuth stay behind MCP until a JSON result returns up the chain.
+            </p>
+            <p class="flow-section-title">Use case: “What’s on my calendar this week?”</p>
+            <div class="uc-timeline">
+              <div class="uc-step user">
+                <span class="uc-n">1</span>
+                <div>
+                  <strong>User</strong>
+                  Sends the prompt through the ADK Web UI or <code style="font-size:0.85em">POST /api/chat</code>.
+                </div>
+              </div>
+              <div class="uc-step coordinator">
+                <span class="uc-n">2</span>
+                <div>
+                  <strong>Coordinator</strong>
+                  Classifies as Workspace intent → <code style="font-size:0.85em">transfer_to_agent("workspace_agent")</code>.
+                </div>
+              </div>
+              <div class="uc-step workspace">
+                <span class="uc-n">3</span>
+                <div>
+                  <strong>Workspace agent</strong>
+                  Chooses <code style="font-size:0.85em">calendar_list_events</code> (or equivalent) with date range; calls MCP.
+                </div>
+              </div>
+              <div class="uc-step mcp">
+                <span class="uc-n">4</span>
+                <div>
+                  <strong>Workspace MCP</strong>
+                  Resolves <code style="font-size:0.85em">user_id</code>, loads refresh/access token, invokes Google Calendar API.
+                </div>
+              </div>
+              <div class="uc-step api">
+                <span class="uc-n">5</span>
+                <div>
+                  <strong>Google Calendar</strong>
+                  Returns events JSON to MCP → tool result to the workspace agent.
+                </div>
+              </div>
+              <div class="uc-step reply">
+                <span class="uc-n">6</span>
+                <div>
+                  <strong>Response path</strong>
+                  Workspace agent summarizes in natural language → coordinator surfaces the final answer → user sees the reply.
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
 
@@ -686,8 +836,12 @@
           <div class="thumb-index">05</div>
           <div class="thumb-title">Build &amp; run</div>
         </button>
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-5" id="tab-5" data-index="5">
+          <div class="thumb-index">06</div>
+          <div class="thumb-title">Process / use-case</div>
+        </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 5</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 6</p>
     </div>
   </div>
 
