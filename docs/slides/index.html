@@ -50,9 +50,9 @@
     }
 
     .page {
-      max-width: 960px;
+      max-width: min(1320px, 96vw);
       margin: 0 auto;
-      padding: clamp(1.25rem, 4vw, 2.5rem);
+      padding: clamp(1.25rem, 4vw, 2.75rem);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -112,7 +112,7 @@
     .slide-deck {
       position: relative;
       width: 100%;
-      max-width: 720px;
+      max-width: 100%;
     }
 
     .slide {
@@ -186,7 +186,7 @@
       color: var(--text-soft);
       font-size: 1.02rem;
       margin-bottom: 1rem;
-      max-width: 58ch;
+      max-width: 85ch;
     }
 
     .slide p:last-child {
@@ -247,12 +247,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 860px;
-      margin: 0 auto;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% + 4rem);
-      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      left: 0;
+      transform: none;
+      padding: 0 clamp(0.15rem, 1.5vw, 1.25rem);
     }
 
     .arrow-btn {
@@ -372,8 +372,7 @@
 
     @media (max-width: 640px) {
       .arrows {
-        width: 100%;
-        padding: 0 0.25rem;
+        padding: 0 0.15rem;
       }
 
       .arrow-btn {
