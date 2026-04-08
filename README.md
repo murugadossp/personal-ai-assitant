@@ -182,11 +182,35 @@ See `personal-ai-assistant/scripts/deploy_cloud_run_minimal.sh` and `mcp-servers
 
 | Layer | Technology |
 |-------|------------|
-| LLM | Gemini (models in `personal-ai-assistant/config.yaml`, optional multi-model fallback) |
+| LLM | Google Gemini — see **Gemini models** below (`personal-ai-assistant/config.yaml`) |
 | Agents | Google ADK — coordinator + `workspace_agent` |
 | Tools | MCP Streamable HTTP → `mcp-servers/google_workspace` |
 | Assistant HTTP | FastAPI, optional ADK Web UI |
 | Python | 3.12 recommended for `personal-ai-assistant` (see `.python-version`) |
+
+### Gemini models (`personal-ai-assistant/config.yaml`)
+
+- **Per agent:** `agents.coordinator` and `agents.workspace` each have their own block. You can assign different model chains for routing vs. tool-heavy workspace turns; the repo default uses the **same** ordered `model_candidates` for both.
+- **Primary model:** The **first** ID in `model_candidates` is the main model for generation.
+- **Fallback chain:** Additional list entries are **fallbacks in order**. On **quota / rate-limit** style failures (for example HTTP **429** or **RESOURCE_EXHAUSTED**), the same request is retried with the **next** model via `FallbackGeminiLlm` — no agent code changes. See [`personal-ai-assistant/docs/model-fallback.md`](personal-ai-assistant/docs/model-fallback.md).
+- **Single model:** One entry in `model_candidates` (or a plain `model:` field) skips the fallback wrapper and passes a string model name straight to ADK.
+
+Current default order (edit the file to change IDs):
+
+```yaml
+# excerpt — see full file in-repo
+agents:
+  workspace:
+    model_candidates:
+      - gemini-3.1-flash-lite-preview   # primary
+      - gemini-3-flash-preview          # fallback 1
+      - gemini-2.5-flash                # fallback 2
+  coordinator:
+    model_candidates:
+      - gemini-3.1-flash-lite-preview
+      - gemini-3-flash-preview
+      - gemini-2.5-flash
+```
 
 ---
 

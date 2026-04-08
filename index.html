@@ -57,6 +57,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-
 .card:hover::before{opacity:1}
 .card h3{font-size:1.2rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
 .card p{color:var(--text-dim);font-size:.95rem}
+.card ul{margin:.75rem 0 0;padding-left:1.25rem;color:var(--text-dim);font-size:.9rem}
+.card li{margin:.35rem 0}
+.card .feature-foot{margin-top:.85rem;font-size:.85rem;color:var(--text-muted)}
 .card .tag{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;margin-right:.4rem;margin-top:.5rem}
 .flow-card{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius);padding:2rem;margin:1.5rem 0}
 .flow-steps{display:flex;flex-direction:column;gap:0}
@@ -243,7 +246,7 @@ drive_read_file</div>
   <!-- Tech Stack -->
   <div class="section-title"><div class="icon" style="background:rgba(236,72,153,.15)">📦</div>Tech Stack</div>
   <div class="grid grid-3">
-    <div class="card"><h3>🧠 AI & Agents</h3><p>Google Gemini (models in <code style="font-size:.8rem">config.yaml</code>). ADK: coordinator + workspace sub-agent; MCP tools on the workspace agent only.</p></div>
+    <div class="card"><h3>🧠 Gemini (config-driven)</h3><p>Models are defined in <code style="font-size:.8rem">personal-ai-assistant/config.yaml</code> — separate blocks for coordinator and workspace (defaults use the same chain). ADK: coordinator + workspace sub-agent; MCP tools only on the workspace agent. Multiple IDs use <code style="font-size:.8rem">FallbackGeminiLlm</code>.</p><ul><li><strong>Primary:</strong> first <code>model_candidates</code> entry serves every turn until it errors.</li><li><strong>Fallbacks:</strong> on quota / rate-limit style errors (e.g. 429), the next entry is tried automatically.</li><li><strong>Customize:</strong> reorder, add, or trim the list; one entry = no fallback wrapper.</li></ul><p class="feature-foot">See <code>personal-ai-assistant/docs/model-fallback.md</code> · e.g. <code>gemini-3.1-flash-lite-preview</code> → <code>gemini-3-flash-preview</code> → <code>gemini-2.5-flash</code></p></div>
     <div class="card"><h3>🔌 Protocol</h3><p>Model Context Protocol (MCP) via Streamable HTTP. Official Python SDK (mcp v1.27). FastMCP decorators.</p></div>
     <div class="card"><h3>🔐 Security</h3><p>OAuth 2.0 per-user authorization. Firestore token storage in production. Cloud Run IAM access control.</p></div>
     <div class="card"><h3>☁️ Deployment</h3><p>Google Cloud Run containers. Firestore for token persistence. Auto-scaling and HTTPS built-in.</p></div>
