@@ -182,6 +182,20 @@
       color: var(--text);
     }
 
+    .slide h2 {
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin: 1.35rem 0 0.5rem;
+      line-height: 1.35;
+    }
+
+    .slide h2:first-of-type {
+      margin-top: 0.35rem;
+    }
+
     .slide p {
       color: var(--text-soft);
       font-size: 1.02rem;
@@ -523,6 +537,26 @@
             </ul>
           </div>
         </article>
+
+        <article class="slide" data-slide="2" aria-label="Slide 3">
+          <div class="slide-card">
+            <span class="slide-label">Opportunities</span>
+            <h1>Differentiation &amp; unique value</h1>
+            <h2>How different is it from any of the other existing ideas?</h2>
+            <p>
+              Many demos stop at <strong>RAG or read-only Q&amp;A</strong>. This assistant <strong>acts on your real account</strong>—create events, search mail, open Drive—through <strong>OAuth-backed tools</strong>, not mocked data. It is also <strong>not a tangle of product-specific agents</strong>: one <strong>workspace</strong> specialist plus a <strong>coordinator</strong> keeps ADK wiring simple while still feeling multi-agent.
+            </p>
+            <p>
+              The <strong>MCP server is a real boundary</strong>: auth, token storage, and Google API calls live <strong>outside</strong> the agent core, so the same assistant pattern can evolve (more tools, stricter policies) without rewriting the whole LLM stack.
+            </p>
+            <h2>USP of the proposed solution</h2>
+            <ul>
+              <li><strong>Unified Workspace UX:</strong> one natural-language thread for Calendar, Gmail, and Drive.</li>
+              <li><strong>Standard tool surface:</strong> MCP Streamable HTTP — portable, observable, and swappable backends.</li>
+              <li><strong>Production-shaped defaults:</strong> split deploy (assistant vs MCP), config-driven Gemini with <strong>ordered model fallbacks</strong>, and durable token storage on the MCP side when you choose Firestore.</li>
+            </ul>
+          </div>
+        </article>
       </div>
     </div>
 
@@ -537,8 +571,12 @@
           <div class="thumb-index">02</div>
           <div class="thumb-title">Architecture</div>
         </button>
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-2" id="tab-2" data-index="2">
+          <div class="thumb-index">03</div>
+          <div class="thumb-title">Opportunities</div>
+        </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 2</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 3</p>
     </div>
   </div>
 
