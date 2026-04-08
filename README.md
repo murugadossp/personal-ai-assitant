@@ -173,7 +173,7 @@ See `personal-ai-assistant/scripts/deploy_cloud_run_minimal.sh` and `mcp-servers
 | Asset | Notes |
 |-------|--------|
 | OAuth client / secrets | `credentials.json`, `client_secret*.json`, `.tokens/` — **never commit** (covered by root `.gitignore`) |
-| User tokens | Local files or Firestore in production |
+| User tokens | **Workspace MCP** holds OAuth tokens (`TOKEN_BACKEND`: `local` → `.tokens/`, or `firestore`). Code default is `local`; the MCP **`Dockerfile` sets `TOKEN_BACKEND=firestore`** for Cloud Run–style deploys. The **assistant** does not store those tokens. |
 | API keys | `GOOGLE_API_KEY` via Secret Manager on Cloud Run |
 
 ---
