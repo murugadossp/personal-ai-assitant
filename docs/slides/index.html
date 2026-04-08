@@ -325,6 +325,58 @@
       border-color: rgba(5, 150, 105, 0.4);
     }
 
+    /* Feature list — same color key as architecture flow */
+    .feat-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      font-weight: 600;
+      color: var(--text);
+      margin: 1.15rem 0 0.45rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feat-head:first-of-type {
+      margin-top: 0.25rem;
+    }
+
+    .feat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+    }
+
+    .feat-dot.user {
+      background: rgb(245, 158, 11);
+    }
+
+    .feat-dot.coordinator {
+      background: rgb(139, 92, 246);
+    }
+
+    .feat-dot.workspace {
+      background: rgb(59, 130, 246);
+    }
+
+    .feat-dot.mcp {
+      background: rgb(99, 102, 241);
+    }
+
+    .feat-list {
+      margin: 0 0 0.15rem;
+      padding-left: 1.35rem;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .feat-list li {
+      margin: 0.32rem 0;
+    }
+
     /* Arrow controls */
     .arrows {
       position: absolute;
@@ -560,6 +612,38 @@
 
         <article class="slide" data-slide="3" aria-label="Slide 4">
           <div class="slide-card">
+            <span class="slide-label">Product</span>
+            <h1>List of features offered by the solution</h1>
+            <h2 class="feat-head user"><span class="feat-dot user" aria-hidden="true"></span>User-facing</h2>
+            <ul class="feat-list">
+              <li><strong>One conversation</strong> for Calendar, Gmail, and Drive—ask in plain language.</li>
+              <li><strong>Real account actions</strong> (list/create events, search and read mail, list and read Drive files)—not mocked data.</li>
+              <li><strong>Per-user OAuth</strong> via the MCP server; first-time <code style="font-size:0.88em">/auth?user_id=…</code> flow, then the assistant remembers the session context.</li>
+              <li><strong>FastAPI + optional ADK Web UI</strong> for chat; works with <code style="font-size:0.88em">/api/chat</code> for integrations.</li>
+            </ul>
+            <h2 class="feat-head coordinator"><span class="feat-dot coordinator" aria-hidden="true"></span>Coordinator agent</h2>
+            <ul class="feat-list">
+              <li><strong>Intent routing</strong> and light chit-chat at the ADK app root.</li>
+              <li><strong>Delegation</strong> with <code style="font-size:0.88em">transfer_to_agent("workspace_agent")</code> for anything Workspace-shaped.</li>
+              <li><strong>No MCP tools on the coordinator</strong>—keeps the root agent small and predictable.</li>
+            </ul>
+            <h2 class="feat-head workspace"><span class="feat-dot workspace" aria-hidden="true"></span>Workspace agent</h2>
+            <ul class="feat-list">
+              <li><strong>Single specialist sub-agent</strong> with the full Google Workspace MCP toolset (no separate Calendar/Gmail/Drive ADK agents).</li>
+              <li><strong>Tool orchestration</strong>—picks the right <code style="font-size:0.88em">calendar_*</code>, <code style="font-size:0.88em">gmail_*</code>, <code style="font-size:0.88em">drive_*</code> calls and summarizes results in natural language.</li>
+              <li><strong>Config-driven Gemini</strong> per agent block in <code style="font-size:0.88em">config.yaml</code> with <strong>ordered model fallbacks</strong> on quota-style errors.</li>
+            </ul>
+            <h2 class="feat-head mcp"><span class="feat-dot mcp" aria-hidden="true"></span>Workspace MCP server</h2>
+            <ul class="feat-list">
+              <li><strong>MCP Streamable HTTP</strong> endpoint for tools; works with the ADK <code style="font-size:0.88em">MCPToolset</code>.</li>
+              <li><strong>OAuth + token lifecycle</strong>; <strong>local</strong> or <strong>Firestore</strong> token backend for dev vs scaled deploy.</li>
+              <li><strong>Deployable</strong> (e.g. Cloud Run) with <code style="font-size:0.88em">BASE_URL</code>-aware auth links.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="slide" data-slide="4" aria-label="Slide 5">
+          <div class="slide-card">
             <span class="slide-label">Build &amp; run</span>
             <h1>From repo to a live Workspace conversation</h1>
             <h2>Local loop</h2>
@@ -596,10 +680,14 @@
         </button>
         <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-3" id="tab-3" data-index="3">
           <div class="thumb-index">04</div>
+          <div class="thumb-title">Features</div>
+        </button>
+        <button type="button" class="thumb" role="tab" aria-selected="false" aria-controls="slide-4" id="tab-4" data-index="4">
+          <div class="thumb-index">05</div>
           <div class="thumb-title">Build &amp; run</div>
         </button>
       </div>
-      <p class="counter" id="counter" aria-live="polite">1 / 4</p>
+      <p class="counter" id="counter" aria-live="polite">1 / 5</p>
     </div>
   </div>
 
